@@ -4,18 +4,17 @@ on: [push]
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - name: Run step manually
-            manual: true
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - name: Check out repository code
         uses: actions/checkout@v4
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
       - name: List files in the repository
-        if: matrix.manual
         run: |
           ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+#You should not run echo ${{ github.event.comment.body }}, because it potentially causes shell injection, which allows attackers do arbitrary code execution.
+      - name: print body
+        env:
+          BODY: ${{ github.event.comment.body }}
+        run: echo "$BODY"
+
